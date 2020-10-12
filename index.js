@@ -48,13 +48,33 @@ function loadPrompts() {
       ],
     })
     .then((answer) => {
-      switch (answer.choice.values) {
-        case "ADD_DEPARTMENT":
-          return console.log("hello");
-        case "VIEW_PORT":
-          return view();
-        case "UPDATE_ROLE":
-          return udpateRole();
+      switch (answer.choice) {
+        case "Add a department, role, or employee":
+          return adding();
+        case "View a department, role or employee":
+          return console.log("view");
+        case "update emoployee role":
+          return console.log("update");
+      }
+    });
+}
+
+function adding() {
+  inquirer
+    .prompt({
+      type: "list",
+      name: "addQuery",
+      message: "Please select what you want to add",
+      choices: ["Add a department", "Add a role", "Add an employee"],
+    })
+    .then((answer) => {
+      switch (answer.addQuery) {
+        case "Add a department":
+          return console.log("add department");
+        case "Add a role":
+          return addRole();
+        case "Add an employee":
+          return addEmployee();
       }
     });
 }
