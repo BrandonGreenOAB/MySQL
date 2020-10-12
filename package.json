@@ -1,0 +1,27 @@
+{
+  "name": "mysqlpackage",
+  "version": "1.0.0",
+  "description": "mysql with databases",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BrandonGreenOAB/MySQL.git"
+  },
+  "keywords": [
+    "mysql"
+  ],
+  "author": "Brandon Green",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/BrandonGreenOAB/MySQL/issues"
+  },
+  "homepage": "https://github.com/BrandonGreenOAB/MySQL#readme",
+  "dependencies": {
+    "asciiart-logo": "^0.2.6",
+    "inquirer": "^7.3.3",
+    "mysql": "^2.18.1"
+  }
+}
