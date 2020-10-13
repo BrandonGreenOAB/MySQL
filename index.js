@@ -50,7 +50,7 @@ function loadPrompts() {
         case "Add a department, role, or employee":
           return adding();
         case "View a department, role or employee":
-          return console.log("view");
+          return viewing();
         case "update emoployee role":
           return console.log("update");
       }
@@ -72,7 +72,26 @@ function adding() {
         case "Add a role":
           return addRole();
         case "Add an employee":
-          return console.log("add an employee");
+          return addEmployee();
+      }
+    });
+}
+function viewing() {
+  inquirer
+    .prompt({
+      type: "list",
+      name: "viewQuery",
+      message: "Please select what you would like to view.",
+      choices: ["View a department", "View a role", "View an employee"],
+    })
+    .then((answer) => {
+      switch (answer.addQuery) {
+        case "View a department":
+          return viewDepartment();
+        case "View a role":
+          return viewRole();
+        case "View an employee":
+          return viewEmployee();
       }
     });
 }
@@ -98,8 +117,8 @@ function addDepartment() {
 }
 function addRole() {
   inquirer
-    .prompt(
-      [{
+    .prompt([
+      {
         type: "input",
         name: "addRole",
         message: "Enter the name of the role you'd like to add.",
@@ -113,13 +132,13 @@ function addRole() {
         type: "input",
         name: "roleID",
         message: "What is the department ID for this role?",
-      }]
-    )
+      },
+    ])
     .then((answer) => {
       connection.query(
         `INSERT INTO role SET ?`,
         {
-          title: answer.addDept,
+          title: answer.addRole,
           salary: answer.roleSalary,
           department_id: answer.roleID,
         },
@@ -128,6 +147,47 @@ function addRole() {
         }
       );
       console.log("Adding A Role...");
+      loadPrompts();
+    });
+}
+function addEmployee() {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "fnEmployee",
+        message: "Enter the first name of the employee you'd like to add.",
+      },
+      {
+        type: "input",
+        name: "lnEmployee",
+        message: "What is the last name of the employee?",
+      },
+      {
+        type: "input",
+        name: "deptID",
+        message: "What is the department ID for this employee?",
+      },
+      {
+        type: "input",
+        name: "empManager",
+        message: "what is the manager id for this employee?",
+      },
+    ])
+    .then((answer) => {
+      connection.query(
+        `INSERT INTO employee SET ?`,
+        {
+          first_name: answer.fnEmployee,
+          last_name: answer.lnEmployee,
+          role_id: answer.deptID,
+          manager_id: answer.empManager,
+        },
+        (err) => {
+          if (err) throw err;
+        }
+      );
+      console.log("Adding an Employee...");
       loadPrompts();
     });
 }
