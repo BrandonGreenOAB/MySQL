@@ -98,19 +98,36 @@ function addDepartment() {
 }
 function addRole() {
   inquirer
-    .prompt({
-      type: "input",
-      name: "addRole",
-      message: "Enter the name of the role you'd like to add.",
-    })
+    .prompt(
+      [{
+        type: "input",
+        name: "addRole",
+        message: "Enter the name of the role you'd like to add.",
+      },
+      {
+        type: "input",
+        name: "roleSalary",
+        message: "What is the salary of this postion?",
+      },
+      {
+        type: "input",
+        name: "roleID",
+        message: "What is the department ID for this role?",
+      }]
+    )
     .then((answer) => {
       connection.query(
         `INSERT INTO role SET ?`,
-        { title: answer.addDept },
+        {
+          title: answer.addDept,
+          salary: answer.roleSalary,
+          department_id: answer.roleID,
+        },
         (err) => {
           if (err) throw err;
         }
       );
       console.log("Adding A Role...");
+      loadPrompts();
     });
 }
