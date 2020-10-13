@@ -1,5 +1,3 @@
-//require statements
-
 const inquirer = require("inquirer");
 const mysql = require("mysql");
 const logo = require("asciiart-logo");
@@ -70,11 +68,49 @@ function adding() {
     .then((answer) => {
       switch (answer.addQuery) {
         case "Add a department":
-          return console.log("add department");
+          return addDepartment();
         case "Add a role":
           return addRole();
         case "Add an employee":
-          return addEmployee();
+          return console.log("add an employee");
       }
+    });
+}
+
+function addDepartment() {
+  inquirer
+    .prompt({
+      type: "input",
+      name: "addDept",
+      message: "Enter the name of the department you'd like to add.",
+    })
+    .then((answer) => {
+      connection.query(
+        `INSERT INTO department SET ?`,
+        { name: answer.addDept },
+        (err) => {
+          if (err) throw err;
+        }
+      );
+      console.log("Adding Department...");
+      loadPrompts();
+    });
+}
+function addRole() {
+  inquirer
+    .prompt({
+      type: "input",
+      name: "addRole",
+      message: "Enter the name of the role you'd like to add.",
+    })
+    .then((answer) => {
+      connection.query(
+        `INSERT INTO role SET ?`,
+        { title: answer.addDept },
+        (err) => {
+          if (err) throw err;
+        }
+      );
+      console.log("Adding A Role...");
     });
 }
