@@ -35,7 +35,7 @@ function loadPrompts() {
           name: "Add a department, role, or employee",
         },
         {
-          name: "View a department, role or employee",
+          name: "View departments, roles, or employees",
         },
         {
           name: "update emoployee role",
@@ -46,7 +46,7 @@ function loadPrompts() {
       switch (answer.choice) {
         case "Add a department, role, or employee":
           return adding();
-        case "View a department, role or employee":
+        case "View departments, roles, or employees":
           return viewing();
         case "update emoployee role":
           return updating();
@@ -79,15 +79,15 @@ function viewing() {
       type: "list",
       name: "viewQuery",
       message: "Please select what you would like to view.",
-      choices: ["View a department", "View a role", "View an employee"],
+      choices: ["View departments", "View roles", "View employees"],
     })
     .then((answer) => {
       switch (answer.viewQuery) {
-        case "View a department":
+        case "View departments":
           return viewDepartment();
-        case "View a role":
+        case "View roles":
           return viewRole();
-        case "View an employee":
+        case "View employees":
           return viewEmployee();
       }
     });
@@ -206,6 +206,7 @@ function addRole() {
       loadPrompts();
     });
 }
+
 function addEmployee() {
   inquirer
     .prompt([
