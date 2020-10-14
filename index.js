@@ -33,15 +33,12 @@ function loadPrompts() {
       choices: [
         {
           name: "Add a department, role, or employee",
-          values: "ADD_DEPARTMENT",
         },
         {
           name: "View a department, role or employee",
-          values: "VIEW_PORT",
         },
         {
           name: "update emoployee role",
-          values: "UPDATE_ROLE",
         },
       ],
     })
@@ -52,7 +49,7 @@ function loadPrompts() {
         case "View a department, role or employee":
           return viewing();
         case "update emoployee role":
-          return console.log("update");
+          return updating();
       }
     });
 }
@@ -85,7 +82,7 @@ function viewing() {
       choices: ["View a department", "View a role", "View an employee"],
     })
     .then((answer) => {
-      switch (answer.addQuery) {
+      switch (answer.viewQuery) {
         case "View a department":
           return viewDepartment();
         case "View a role":
@@ -94,6 +91,65 @@ function viewing() {
           return viewEmployee();
       }
     });
+}
+function updating() {
+  let updateEmpID = "";
+  connection.query("SELECT * FROM employee", function (err, res) {
+    if (err) throw err;
+    console.table(res);
+
+    inquirer
+      .prompt({
+        type: "input",
+        name: "empList",
+        message: "please enter the id of the employee to update.",
+      })
+      .then((answer) => {
+        updateEmpID = answer.empList;
+        connection.query(
+          "SELECT * FROM employee WHERE id = ? ",
+          [updateEmpID],
+          function (err, res) {
+            if (err) throw err;
+            console.table(res);
+            //query database for roles
+            //update the local array to have the roles from the role db
+            //push those roles to the choices array
+            const roleArr = [];
+            connection.query("SELECT * FROM role", function (err, res) {
+              res.forEach((element) => {
+                roleArr.push(element.title);
+              });
+              inquirer
+                .prompt({
+                  type: "list",
+                  name: "updateRole",
+                  message: "please select a role id for this employee",
+                  choices: roleArr,
+                })
+                .then((answer) => {
+                  connection.query(
+                    "SELECT * FROM role WHERE title = ?",
+                    [answer.updateRole],
+                    function (err, res) {
+                      if (err) throw err;
+                      console.table(res);
+                      connection.query(
+                        "UPDATE employee SET role_id = ? WHERE id = ?",
+                        [res[0].id, updateEmpID],
+                        function (err, result) {
+                          if (err) throw err;
+                          loadPrompts();
+                        }
+                      );
+                    }
+                  );
+                });
+            });
+          }
+        );
+      });
+  });
 }
 
 function addDepartment() {
@@ -166,12 +222,13 @@ function addEmployee() {
       {
         type: "input",
         name: "deptID",
-        message: "What is the department ID for this employee?",
+        message: "What is the role ID for this employee?(choose 1-10)",
       },
       {
         type: "input",
         name: "empManager",
-        message: "what is the manager id for this employee?",
+        message:
+          "what is the manager id for this employee?(manager must exist)",
       },
     ])
     .then((answer) => {
@@ -190,4 +247,26 @@ function addEmployee() {
       console.log("Adding an Employee...");
       loadPrompts();
     });
+}
+
+function viewDepartment() {
+  connection.query("SELECT * FROM department", function (err, res) {
+    if (err) throw err;
+    console.table(res);
+    loadPrompts();
+  });
+}
+function viewEmployee() {
+  connection.query("SELECT * FROM employee", function (err, res) {
+    if (err) throw err;
+    console.table(res);
+    loadPrompts();
+  });
+}
+function viewRole() {
+  connection.query("SELECT * FROM role", function (err, res) {
+    if (err) throw err;
+    console.table(res);
+    loadPrompts();
+  });
 }
